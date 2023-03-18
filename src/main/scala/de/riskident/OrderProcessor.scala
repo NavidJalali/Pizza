@@ -14,7 +14,7 @@ object OrderProcessor:
    * Read the next line from the iterator and if it is empty wrap it into a
    * parsing error.
    */
-  private def readNextLine(
+  private inline def readNextLine(
     iter: Iterator[String]
   ): Either[ParsingError.UnexpectedEndOfStream.type, String] =
     iter.nextOption.toRight(ParsingError.UnexpectedEndOfStream)
@@ -23,7 +23,9 @@ object OrderProcessor:
    * Read the number of customers from the iterator and if it is empty or in an
    * unexpected format wrap it into a parsing error.
    */
-  private def readCustomerCount(iter: Iterator[String]): Either[ParsingError, CustomerCount] =
+  private inline def readCustomerCount(
+    iter: Iterator[String]
+  ): Either[ParsingError, CustomerCount] =
     readNextLine(iter).flatMap(raw =>
       CustomerCount.fromString(raw).toRight(ParsingError.InvalidCustomerCount(raw))
     )
@@ -32,7 +34,7 @@ object OrderProcessor:
    * Read the next `customerCount` lines and try to parse them into Orders.
    * Short circuit on the first error
    */
-  private def readOrdersUnordered(
+  private inline def readOrdersUnordered(
     iter: Iterator[String],
     customerCount: CustomerCount
   ): Either[ParsingError, Seq[Order]] =
@@ -55,7 +57,7 @@ object OrderProcessor:
    * Calculate the sum total of waiting times for all Orders using the
    * non-preemptive shortest job first algorithm.
    */
-  private def totalWaitingDuration(sortedOrders: Seq[Order]): Duration =
+  private inline def totalWaitingDuration(sortedOrders: Seq[Order]): Duration =
     val enqueuedOrders: mutable.PriorityQueue[Order] =
       mutable.PriorityQueue.empty[Order](Ordering.by(_.cookingDuration.value * -1))
 
